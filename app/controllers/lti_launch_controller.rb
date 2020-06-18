@@ -106,6 +106,25 @@ Rails.cache.write("lti_client_id", params[:client_id])
     end
   end
 
+  # An endpoint used to launch Articulate Rise 360 packages.
+  def rise360_launch
+    # TODO: this is all hacked up for the prototype. It just launches extraced Rise xApi packages located at 'path' with LRS
+    # auth config params
+    params.require('path')
+
+    # Example LRS auth creds. Change these to your actual LRS for it to send xApi data there.
+    auth_params = {
+      :endpoint => 'https://8f50b70bdf7c.ngrok.io/data/xAPI',
+      :auth => 'Basic MjFiMWExMDg3ODQ5ZjcyNzhiYmRkZDI2MTlkNWExNWRkNzkyNGRjOTo4ZjMyMzdiYWZmNjQyNTNjNWRkNGEyNDlhNWMzNzE0M2Q2ZTMyZmQw',
+      :actor => '{ "name": ["briantest2"], "mbox": ["mailto:brian.test2@bebraven.org"]}',
+      :activity_id => '61XkSYC1ht2_course_id',
+      :registration => '760e3480-ba55-4991-94b0-01820dbd23a2'
+    }.to_query
+    launch_url = "https://platformweb#{params[:path]}?#{auth_params}"
+puts "### launching (with LRS config in query params): #{launch_url}" 
+    redirect_to launch_url
+  end
+
   # TODO: complete hackery to allow the form to submit back a DeepLinkingResponse to canvas
   def deep_link_response
     #token = decoded_jwt_token(request)
@@ -177,9 +196,17 @@ Rails.cache.write("lti_client_id", params[:client_id])
 
 # deep link?
 # See " 2.2 LTI Resource Link" of https://www.imsglobal.org/spec/lti-dl/v2p0#link for more options
+#    out << {
+#        "type" => "ltiResourceLink",
+#        "url" => "https://stagingportal.bebraven.org/courses/58/assignments/1312",
+#        "iframe" => { 
+#          "width" => 1000,
+#          "height" => 1000
+#        }
+#    }
     out << {
         "type" => "ltiResourceLink",
-        "url" => "https://stagingportal.bebraven.org/courses/58/assignments/1312",
+        "url" => "https://platformweb/lti/rise360_launch?path=#{CGI.escape('/onboard-to-braven-prototype-tincan-NCTyVgqk/index.html')}",
         "iframe" => { 
           "width" => 1000,
           "height" => 1000

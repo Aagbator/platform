@@ -88,6 +88,8 @@ Rails.application.routes.draw do
   get '/lti/launch', to: 'lti_launch#launch'
   post '/lti/launch', to: 'lti_launch#launch'
   post '/lti/deep_link', to: 'lti_launch#deep_link_response'
+  get '/lti/rise360_launch', to: 'lti_launch#rise360_launch'
+  post '/lti/rise360_launch', to: 'lti_launch#rise360_launch'
 
   # RubyCAS Routes
   resources :cas, except: [:show]
