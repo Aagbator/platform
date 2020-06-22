@@ -1,0 +1,137 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+<!--     <link href="https://stagingportal.bebraven.org/dist/brandable_css/legacy_normal_contrast/bundles/common-42a1537303.css" media="all" rel="stylesheet">
+    <link href="https://s3.amazonaws.com/canvas-prod-assets/braven_newui.css" media="all" rel="stylesheet"> -->
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lato" />
+    <script src="../lib/tincan.js"></script>
+    <script>
+
+var lrs;
+
+try {
+    lrs = new TinCan.LRS(
+        {
+            endpoint: "https://lrs.braven.org/data/xAPI",
+            username: "9324b80f6cb0070269e09ed45e363302037beac5",
+            password: "c8fd35e68dad51b51f2392cc6630c72d5cd13c73",
+            allowFail: false,
+        }
+    );
+}
+catch (ex) {
+    console.log("Failed to setup LRS object: ", ex);
+    // TODO: do something with error, can't communicate with LRS
+}
+
+    </script>
+</head>
+<body>
+
+<div>
+    <form>
+        <fieldset
+            style="padding 0; padding-bottom: 30px; border: 0; margin: 0;">
+            <textarea 
+                id="dbc0a66f-3a82-415f-9cea-deba2d1c7f80" 
+                style="padding: 10px; border: 1px solid #CCC; width: 100%; height: 20em;"></textarea>
+        </fieldset>
+
+        <input 
+            style="width: 100%; background-color: #EB3B46; border-radius: 2px; line-height: 15px;
+            margin: 0; border: 0;
+            margin-top: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: .17rem;
+            padding: 20px;
+            cursor: pointer;
+            color: #fff;
+            font-family: Lato;"
+            type="button" value="DONE" id="ec9b62f7-ce3e-47de-96fa-34bbb6dbdf7f" >
+
+    </form>
+</div>
+
+    <script>
+    document.getElementById("ec9b62f7-ce3e-47de-96fa-34bbb6dbdf7f").onclick = () => {
+        const text = document.getElementById("dbc0a66f-3a82-415f-9cea-deba2d1c7f80").value;
+
+        // In rise I can see something like: https://rise.articulate.com/author/CwfzNM9dczNu1tO9l_Gi8vlofmhl4ikO
+        // so I think we can figure out which course we are in!
+        console.log(document.referrer);
+
+        // Ugh, not useful, this is just this location: https://3894d89fd03d.ngrok.io//rise360-custom-blocks/text-input/ryan.html
+        console.log(window.location.href);
+        // Nope, this is cross-origin and it won't let me figure out calling context
+        //console.log(window.parent.location);
+
+        // If I host this file on Canvas, can I pull out the logged in user, etc.? 
+
+var statement = new TinCan.Statement(
+    {
+        actor: {
+            name: "iframetest",
+            mbox: "mailto:jess.ouyang@bebraven.org"
+        },
+        verb: {
+            id: "http://adlnet.gov/expapi/verbs/experienced"
+        },
+        // Target doesn't show up in Learning Locker UI? 
+        target: {
+            id: "http://platformweb/test.html#/mytextarea"
+        },
+        result: {
+            success: false,
+            response: text
+        },
+        "object": {
+            //"id": "http://platformweb/test.html#/mytextarea",
+            // In Canvas this is "https://platformweb/02-lead-authentically/index.html"
+            // In Rise preview this is "https://rise.articulate.com/author/CwfzNM9dczNu1tO9l_Gi8vlofmhl4ikO"
+            "id": document.referrer,
+            "objectType": "Activity",
+            "definition": {
+                "type": "http://adlnet.gov/expapi/activities/cmi.interaction",
+                "name": {
+                    "und": "What do you think?"
+                },
+                "description": {
+                    "und": "What do you think?"
+                },
+                "interactionType": "fill-in",
+                "correctResponsesPattern": [
+                    ""
+                ]
+            }
+        }
+    }
+);
+
+lrs.saveStatement(
+    statement,
+    {
+        callback: function (err, xhr) {
+            if (err !== null) {
+                if (xhr !== null) {
+                    alert("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
+                    // TODO: do something with error, didn't save statement
+                    return;
+                }
+
+                alert("Failed to save statement: " + err);
+                // TODO: do something with error, didn't save statement
+                return;
+            }
+
+            alert("Statement saved");
+            // TOOO: do something with success (possibly ignore)
+        }
+    }
+);
+
+
+    };
+    </script>
+</body>
+</html>
