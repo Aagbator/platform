@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   resources :course_contents do
     post :publish
-    resources :course_content_histories, path: 'versions', only: [:index, :show, :create]
+    resources :course_content_histories, path: 'versions', only: [:index, :show, :new, :create]
   end
   resources :file_upload, only: [:create]
 

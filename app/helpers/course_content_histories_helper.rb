@@ -5,11 +5,11 @@ module CourseContentHistoriesHelper
   # Turns the HTML for the project into HTML with data-bz-retained
   # elements populated with user inputs, disabled, and highlighted in
   # order to view the project submission.
-  def project_submission_html_for(project_lti_id, project_html, student)
+  def project_submission_html_for(project_lti_id, project_html, student, write_enabled=false)
     @retrieved_values = fetch_user_data_for(project_lti_id, student)
     doc = Nokogiri::HTML::DocumentFragment.parse(project_html)
     doc.css('[data-bz-retained]').each do |node|
-      disable_and_highlight(node)
+      disable_and_highlight(node) unless write_enabled
       if @retrieved_values
         data_input_id = node['data-bz-retained']
         case node.name.downcase
@@ -22,8 +22,6 @@ module CourseContentHistoriesHelper
     end
     doc.to_html
   end
-
-private
 
   # Returns a hash of data_input_ids => values for all inputs sent to the LRS by this user for this project.
   # Note that the value for a particular ID is the most recent value stored. The user can edit a value

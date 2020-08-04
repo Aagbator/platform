@@ -11,13 +11,21 @@ class CourseContentsController < ApplicationController
   # GET /course_contents/1
   # GET /course_contents/1.json
   def show
+    # TODO: https://app.asana.com/0/1174274412967132/1186960110311121
+    # We'll get rid of this redirect when we refactor project submission code
+    if params[:state]
+      redirect_to new_course_content_course_content_history_url(
+        [@course_content, @course_content.last_version],
+        state: params[:state],
+      )
+    end
     # TODO: we can either launch a course contents to actually do the project or we can launch it in preview mode when inserting
     # the params[:state] will be there if it actually needs to talk to the LRS. Clean this up and make sure it's not trying to
     # talk to the LRS in preview mode. See the iframe here for preview mode: app/views/lti_assignment_selection/create.html.erb 
     # Task: https://app.asana.com/0/1174274412967132/1187445581799823
-    if params[:state]
-      @project_lti_id = LtiLaunch.current(params[:state]).activity_id
-    end
+    # if params[:state]
+    #   @project_lti_id = LtiLaunch.current(params[:state]).activity_id
+    # end
   end
 
   # GET /course_contents/new
