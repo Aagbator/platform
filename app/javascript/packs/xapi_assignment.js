@@ -89,10 +89,63 @@ function sendStatement(e) {
     );
 };
 
+function populatePreviousAnswers() {
+    const project_lti_id = document.getElementById('javascript_variables').attributes['data-project-lti-id'].value;
+    const activity_id = project_lti_id; // e.g. https://braven.instructure.com/courses/48/assignments/158
+    const current_url = `${window.location.origin}${window.location.pathname}`
 
-// Attach the xAPI function to all appropriate inputs.
+    function fetchAnswers(err, sr) {
+        if (err !== null) {
+            console.log("Failed to query statements: " + err);
+            // TODO: Do something with error, didn't get statements.
+            return;
+        }
+
+        // Do something with statements in sr.statements.
+        sr.statements.forEach(statement => {
+            const data_input_id = statement.target.definition.name.und;
+            document.querySelectorAll(`[data-bz-retained="${data_input_id}"]`).forEach(input => {
+                if (!input.value) {
+                    input.value = statement.result.response;
+                }
+            });
+        });
+
+        // Check for more after, so the first result for each field is always used.
+        // Note: The TinCanJS docs say to use sr.more !== null, but sr.more is sometimes
+        // the empty string "" when there are no more results.
+        if (sr.more) {
+            // Fetch additional page(s) of statements.
+            lrs.moreStatements({
+                url: sr.more,
+                callback: fetchAnswers
+            });
+        }
+    }
+
+    lrs.queryStatements({
+        params: {
+            verb: new tincan.Verb({
+                id: "http://adlnet.gov/expapi/verbs/answered"
+            }),
+            agent: new tincan.Agent({
+                // Note: We overwrite this actor info server-side.
+                name: "JS_ACTOR_NAME_REPLACE",
+                mbox: "JS_ACTOR_MBOX_REPLACE"
+            }),
+            activity: activity_id
+        },
+        callback: fetchAnswers
+    });
+
+}
+
+
+// Attach the xAPI function to all appropriate inputs, and load any existing data.
 var inputs = document.querySelectorAll('textarea,input[type="text"]');
 
 inputs.forEach(input => {
     input.onblur = sendStatement;
 });
+
+populatePreviousAnswers();
