@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     populatePreviousAnswers();
 });
 
-function sendStatement(e) {
+export function sendStatement(e) {
     const input = e.target;
     const text = input.value;
     const project_lti_id = document.getElementById('javascript_variables').attributes['data-project-lti-id'].value;
@@ -100,7 +100,7 @@ function sendStatement(e) {
     );
 };
 
-function populatePreviousAnswers() {
+export function populatePreviousAnswers() {
     const project_lti_id = document.getElementById('javascript_variables').attributes['data-project-lti-id'].value;
     const activity_id = project_lti_id; // e.g. https://braven.instructure.com/courses/48/assignments/158
     const current_url = `${window.location.origin}${window.location.pathname}`
