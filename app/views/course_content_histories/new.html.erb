@@ -1,16 +1,13 @@
-<!-- FIXME: I don't need this when I'm no longer confused by what's rendering-->
-
-<h1>Course Content Histories: New</h1>
+<!-- TODO: Stop using 'bz-' prefaced CSS -->
 
 <div class="bz-assignment">
   <%== @body_with_user_inputs %>
-  <!-- TODO: https://app.asana.com/0/1174274412967132/1186960110311121 -->
-  <%= form_with url: course_content_course_content_histories_path(@course_content) do |f| %>
-    <input id="state" name='state' type='hidden' value="<%= params[:state] %>" />
-    <!-- TODO: https://app.asana.com/0/1174274412967132/1187342807279865 -->
-  	<input type="submit" value="Submit" />
-  <% end %>
+  <%== @body_with_user_inputs %>
+  <%== @body_with_user_inputs %>
+  <%== @body_with_user_inputs %>
 </div>
+
+<%= react_component('ProjectSubmitNavbar', {lti_launch_state: params[:state], authenticity_token: params[:authenticity_token]})%>
 
 <!-- <td><%= link_to 'Save with Spinner?', course_content_course_content_histories_path(@course_content), method: :post, remote: true, class: "btn btn-primary", data: { "loading-text" => "wait ..." } %></td>
  -->

@@ -12,13 +12,13 @@ class CourseContentHistoriesController < ApplicationController
   layout 'content_editor'
 
   before_action :set_course_content
-  before_action :set_lti_launch, only: [:show, :new, :create]
+  before_action :set_lti_launch, only: [:new, :create]
 
   def index
     # PS: TA & Students
     # All submissions for a student for a project (all versions)
     # This goes away when we nest this resource under student
-    params.require([:student_id])
+    # params.require([:student_id])
     # TODO: Render all submissions for the student
   end
 
@@ -33,8 +33,6 @@ class CourseContentHistoriesController < ApplicationController
     # Needs to fetch the version of the project, read the submission data from LRS
     # and populate the project with those answers
 
-
-    # If there's no student ID, use the logged in user
 
     # This shows a project submission for this version of the course_contents, the one
     # associated with a project when inserted into Canvas through the LTI extension. It does this
@@ -65,6 +63,8 @@ class CourseContentHistoriesController < ApplicationController
       @lti_launch.activity_id,
       @student,
     )
+
+    @authenticity_token = params[:authenticity_token]
 
     if previous_submission_data.empty? 
       # Just return the body of the project, nothing filled out
