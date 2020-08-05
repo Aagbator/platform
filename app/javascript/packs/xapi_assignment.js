@@ -1,21 +1,32 @@
 import tincan from 'tincanjs';
 
-// Connect to the LRS.
-var lrs;
+document.addEventListener("DOMContentLoaded", function(event) { 
+    // Connect to the LRS.
+    var lrs;
 
-try {
-    lrs = new tincan.LRS({
-        // Note: We overwrite this auth server-side.
-        endpoint: `${window.location.origin}/data/xAPI`,
-        username: "JS_USERNAME_REPLACE",
-        password: "JS_PASSWORD_REPLACE",
-        allowFail: false
+    try {
+        lrs = new tincan.LRS({
+            // Note: We overwrite this auth server-side.
+            endpoint: `${window.location.origin}/data/xAPI`,
+            username: "JS_USERNAME_REPLACE",
+            password: "JS_PASSWORD_REPLACE",
+            allowFail: false
+        });
+    } catch (e) {
+        console.log("Failed to setup LRS object: ", e);
+        // TODO: do something with error, can't communicate with LRS
+        // Send this to Honeycomb?
+    }
+
+    // Attach the xAPI function to all appropriate inputs, and load any existing data.
+    var inputs = document.querySelectorAll('textarea,input[type="text"]');
+
+    inputs.forEach(input => {
+        input.onblur = sendStatement;
     });
-} catch (e) {
-    console.log("Failed to setup LRS object: ", e);
-    // TODO: do something with error, can't communicate with LRS
-    // Send this to Honeycomb?
-}
+
+    populatePreviousAnswers();
+});
 
 function sendStatement(e) {
     const input = e.target;
@@ -139,13 +150,3 @@ function populatePreviousAnswers() {
     });
 
 }
-
-
-// Attach the xAPI function to all appropriate inputs, and load any existing data.
-var inputs = document.querySelectorAll('textarea,input[type="text"]');
-
-inputs.forEach(input => {
-    input.onblur = sendStatement;
-});
-
-populatePreviousAnswers();
