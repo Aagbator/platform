@@ -7,42 +7,21 @@ import {
 
 import SubmitButton from "./SubmitButton";
 
-
 class ProjectSubmitNavbar extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       isSubmitting: false,
-    }
+    };
 
     this._handleSubmit.bind(this);
   }
 
   _handleSubmit(event) {
-  	event.preventDefault();
-
-  	const form = event.target;
-  	const data = new FormData(form);
-
-  	this.setState({isSubmitting: true});
-
-  	// FIXME: Don't hardcode this
-  	fetch(
-  	  '/course_contents/1/versions',
-  	  {
-  	  	method: 'POST',
-  	  	data: data,
-  	  },
-  	 ).then(response => response)
-  	.then(
-  	  (result) => {
-  	  	this.setState({isSubmitting: false})
-  	  },
-  	  (error) => {
-  	  	// FIXME: handle errors
-  	  }
-  	)
+    this.setState({isSubmitting: true})
+    this.props.onSubmit();
+    this.setState({isSubmitting: false})
   }
 
   render() {
@@ -51,15 +30,15 @@ class ProjectSubmitNavbar extends React.Component {
       <Navbar
         bg="transparent"
         className="justify-content-end"
-      	fixed="bottom">
+        fixed="bottom">
         <Form
           inline
           className="d-inline-block align-right"
-          onSubmit={(event) => this._handleSubmit}>
+          onSubmit={this._handleSubmit}>
           <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
           <input type="hidden" name="state" value={this.props.lti_launch_state} />
-      	  <SubmitButton isDisabled={this.state.isSubmitting} />
-      	</Form>
+          <SubmitButton isDisabled={this.state.isSubmitting} />
+        </Form>
       </Navbar>
     );
   }

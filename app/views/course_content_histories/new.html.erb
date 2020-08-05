@@ -1,16 +1,13 @@
-<!-- TODO: Stop using 'bz-' prefaced CSS -->
+<%= react_component('Project', {
+	id: 1,
+	version: 1,
+	body: @body_with_user_inputs,
 
-<div class="bz-assignment">
-  <%== @body_with_user_inputs %>
-  <%== @body_with_user_inputs %>
-  <%== @body_with_user_inputs %>
-  <%== @body_with_user_inputs %>
-</div>
+	writeEnabled: true,
 
-<%= react_component('ProjectSubmitNavbar', {lti_launch_state: params[:state], authenticity_token: params[:authenticity_token]})%>
-
-<!-- <td><%= link_to 'Save with Spinner?', course_content_course_content_histories_path(@course_content), method: :post, remote: true, class: "btn btn-primary", data: { "loading-text" => "wait ..." } %></td>
- -->
+	lti_launch_state: params[:state],
+	authenticity_token: params[:authenticity_token],
+})%>
 
 <%= content_tag :div, '', id: "javascript_variables", data: {project_lti_id: @project_lti_id} %>
 <%= javascript_pack_tag 'xapi_assignment' %>

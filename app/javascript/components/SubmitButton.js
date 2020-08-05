@@ -10,7 +10,7 @@ class SubmitButton extends React.Component {
     super(props);
 
     this.state = {
-      isDisabled: this.props.isDisabled || false,
+      isDisabled: props.isDisabled || false,
     }
   }
 
